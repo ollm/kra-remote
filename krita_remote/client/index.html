@@ -320,10 +320,6 @@
                  label="opacity"
                  drag='{"up": "action:increase_opacity", "down":"action:decrease_opacity"}'>
             </div>
-            <div class="active-area top-b" tap="tool:KritaShape/KisToolLine.l"></div>
-            <div class="active-area top-b" keypress="Key_V.l"></div>
-            <div class="active-area bot-b" keypress="Key_R.r"></div>
-            <div class="active-area bot-b" keypress="Key_Alt.alt"></div>
         </div>
         <div v-if="!connected" id="connection"
             v-touch:tap="promptConnection">
