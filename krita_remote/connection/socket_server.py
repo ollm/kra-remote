@@ -57,6 +57,8 @@ class SocketServer(QObject):
     release = pyqtSignal(str)
     tool = pyqtSignal(str)
     new_doc = pyqtSignal(str)
+    set_color_space = pyqtSignal(str)
+    set_layer_color_space = pyqtSignal(str)
     refresh_projection = pyqtSignal()
     resize = pyqtSignal(str)
     save_as = pyqtSignal(str)
@@ -102,6 +104,12 @@ class SocketServer(QObject):
         elif (msg.startswith("new_doc")):
             json = msg.split(":", 1)[1]
             self.new_doc.emit(json)
+        elif (msg.startswith("set_color_space")):
+            json = msg.split(":", 1)[1]
+            self.set_color_space.emit(json)
+        elif (msg.startswith("set_layer_color_space")):
+            json = msg.split(":", 1)[1]
+            self.set_layer_color_space.emit(json)
         elif (msg.startswith("refresh_projection")):
             self.refresh_projection.emit()
         elif (msg.startswith("resize:")):

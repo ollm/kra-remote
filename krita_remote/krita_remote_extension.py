@@ -43,6 +43,8 @@ class KritaRemoteExtension(Extension):
         self._socket.release.connect(self.release)
         self._socket.tool.connect(self.tool)
         self._socket.new_doc.connect(self.new_doc)
+        self._socket.set_color_space.connect(self.set_color_space)
+        self._socket.set_layer_color_space.connect(self.set_layer_color_space)
         self._socket.refresh_projection.connect(self.refresh_projection)
         self._socket.resize.connect(self.resize)
         self._socket.save_as.connect(self.save_as)
@@ -183,6 +185,43 @@ class KritaRemoteExtension(Extension):
         if data.get("closeCurrent"):
             if current_doc:
                 current_doc.close()
+
+        self.send_done()
+
+    @pyqtSlot(str)
+    def set_color_space(self, _json: str):
+
+        data = json.loads(_json)
+
+        colorModel = data.get("colorModel", "RGBA")
+        colorDepth = data.get("colorDepth", "U8")
+
+        profiles = Krita.instance.profiles(colorModel, colorDepth)
+        colorProfile = profiles[0]
+
+        doc = Krita.instance.activeDocument()
+        doc.setColorSpace(colorModel, colorDepth, colorProfile)
+
+        self.send_done()
+
+    @pyqtSlot(str)
+    def set_layer_color_space(self, _json: str):
+
+        data = json.loads(_json)
+
+        layer = self.get_layer(data)
+
+        if not layer:
+            self.send_done()
+            return
+
+        colorModel = data.get("colorModel", "RGBA")
+        colorDepth = data.get("colorDepth", "U8")
+
+        profiles = Krita.instance.profiles(colorModel, colorDepth)
+        colorProfile = profiles[0]
+
+        layer.setColorSpace(colorModel, colorDepth, colorProfile)
 
         self.send_done()
 
